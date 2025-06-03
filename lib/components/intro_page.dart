@@ -14,9 +14,21 @@ class _IntroPageState extends State<IntroPage> {
   int _currentPage = 0;
 
   final List<Map<String, String>> _pages = [
-    {'title': 'Quick Bites,', 'quote': 'Delicious moments delivered fast!'},
-    {'title': 'Flavor Feast,', 'quote': 'Every bite a new discovery!'},
-    {'title': 'Taste Trek,', 'quote': 'Journey through flavor!'},
+    {
+      'title': 'Ceylon Diet Hub',
+      'quote':
+          'When Diet Is Wrong, Medicine Is Of No Use. When Diet Is Correct, Medicine Is Of No Need.',
+    },
+    {
+      'title': 'Ceylon Diet Hub',
+      'quote':
+          'To Keep The Body In Good Health Is A Duty, Otherwise We Shall Not Be Able To Keep Our Mind Strong And Clear.',
+    },
+    {
+      'title': 'Ceylon Diet Hub',
+      'quote':
+          'Eat Breakfast Like A King, Lunch Like A Prince And Dinner Like A Pauper.',
+    },
   ];
 
   @override
@@ -40,12 +52,12 @@ class _IntroPageState extends State<IntroPage> {
             ),
           ),
 
-          // Diagonal Blur Overlay
+          // Diagonal Blur Overlay with reduced opacity
           ClipPath(
             clipper: DiagonalClipper(),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(color: Colors.black.withOpacity(0.4)),
+              filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+              child: Container(color: Colors.black.withOpacity(0.8)),
             ),
           ),
 
@@ -64,31 +76,31 @@ class _IntroPageState extends State<IntroPage> {
                     physics: const BouncingScrollPhysics(),
                     itemCount: _pages.length,
                     itemBuilder: (context, index) {
-                      return Center(
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            const SizedBox(height: 60),
+                            // Title at the top
                             Text(
                               _pages[index]['title']!,
+                              textAlign: TextAlign.center,
                               style: const TextStyle(
-                                fontSize: 32,
+                                fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 40),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Text(
-                                _pages[index]['quote']!,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  height: 1.5,
-                                ),
+                            // Quote below title
+                            Text(
+                              _pages[index]['quote']!,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                                height: 1.5,
                               ),
                             ),
                           ],
@@ -150,6 +162,11 @@ class _IntroPageState extends State<IntroPage> {
                     }
                   },
                   backgroundColor: Colors.pink,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      40,
+                    ), // Increase this value for more roundness
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(

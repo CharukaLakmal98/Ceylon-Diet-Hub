@@ -13,7 +13,7 @@ class _WorkoutPageState extends State<WorkoutPage> {
       name: 'Front squat',
       imageUrl: 'assets/front_squat.jpg', // You'll need to add actual images
     ),
-    ExerciseItem(name: 'Jump rope', imageUrl: 'assets/jump_rope.jpg'),
+    ExerciseItem(name: 'Jump rope', imageUrl: 'assets/images/post-img-5.jpg'),
     ExerciseItem(name: 'Goblet squat', imageUrl: 'assets/goblet_squat.jpg'),
     ExerciseItem(name: 'Dumbbell squat', imageUrl: 'assets/dumbbell_squat.jpg'),
   ];

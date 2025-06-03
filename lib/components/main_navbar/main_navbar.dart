@@ -1,4 +1,4 @@
-import 'package:diet_hub/components/main_navbar/meal_plans.dart';
+import 'package:diet_hub/components/main_navbar/meal_plans/meal_plans.dart';
 import 'package:diet_hub/components/main_navbar/profile_page.dart';
 import 'package:diet_hub/components/main_navbar/workout_page.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +10,10 @@ class MainNavbar extends StatefulWidget {
   State<MainNavbar> createState() => _MainNavbarState();
 }
 
-class _MainNavbarState extends State<MainNavbar> {
+class _MainNavbarState extends State<MainNavbar> with TickerProviderStateMixin {
   int _currentIndex = 0;
+  AnimationController? _animationController;
+  Animation<double>? _scaleAnimation;
 
   final List<Widget> _pages = [
     MealPlansPage(),
@@ -20,13 +22,52 @@ class _MainNavbarState extends State<MainNavbar> {
     Container(), // Placeholder for 4th tab
   ];
 
+  final List<IconData> _icons = [
+    Icons.restaurant_menu,
+    Icons.person,
+    Icons.fitness_center,
+    Icons.calendar_today,
+  ];
+
+  final List<String> _labels = ['Meal Plans', 'Profile', 'Workout', 'Schedule'];
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _animationController!, curve: Curves.elasticOut),
+    );
+    _animationController!.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController?.dispose();
+    super.dispose();
+  }
+
+  void _onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    _animationController?.reset();
+    _animationController?.forward();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_currentIndex],
       bottomNavigationBar: Container(
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        height: 80,
         decoration: BoxDecoration(
           color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(20)),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.3),
@@ -36,88 +77,74 @@ class _MainNavbarState extends State<MainNavbar> {
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Color(0xFF6366F1),
-          unselectedItemColor: Colors.grey,
-          backgroundColor: Colors.white,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color:
-                      _currentIndex == 0
-                          ? Color(0xFF6366F1)
-                          : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.restaurant_menu,
-                  color: _currentIndex == 0 ? Colors.white : Colors.grey,
-                ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: List.generate(_icons.length, (index) {
+            bool isSelected = _currentIndex == index;
+            return GestureDetector(
+              onTap: () => _onTabTapped(index),
+              child: AnimatedBuilder(
+                animation: _scaleAnimation ?? AlwaysStoppedAnimation(1.0),
+                builder: (context, child) {
+                  double scale =
+                      isSelected ? (_scaleAnimation?.value ?? 1.0) : 1.0;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Transform.scale(
+                        scale: scale,
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected
+                                    ? Color(0xFF6366F1)
+                                    : Colors.transparent,
+                            shape: BoxShape.circle,
+                            boxShadow:
+                                isSelected
+                                    ? [
+                                      BoxShadow(
+                                        color: Color(
+                                          0xFF6366F1,
+                                        ).withOpacity(0.3),
+                                        spreadRadius: 2,
+                                        blurRadius: 8,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ]
+                                    : [],
+                          ),
+                          child: Icon(
+                            _icons[index],
+                            color:
+                                isSelected ? Colors.white : Color(0xFF6366F1),
+                            size: isSelected ? 40 : 30,
+                          ),
+                        ),
+                      ),
+                      if (isSelected)
+                        const SizedBox(
+                          height: 8,
+                        ), // Only show SizedBox when selected
+                      AnimatedOpacity(
+                        opacity: isSelected ? 1.0 : 0.0,
+                        duration: Duration(milliseconds: 200),
+                        child: Text(
+                          _labels[index],
+                          style: TextStyle(
+                            color: Color(0xFF6366F1),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
-              label: 'Meal Plans',
-            ),
-            BottomNavigationBarItem(
-              icon: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color:
-                      _currentIndex == 1
-                          ? Color(0xFF6366F1)
-                          : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.person,
-                  color: _currentIndex == 1 ? Colors.white : Colors.grey,
-                ),
-              ),
-              label: 'Profile',
-            ),
-            BottomNavigationBarItem(
-              icon: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color:
-                      _currentIndex == 2
-                          ? Color(0xFF6366F1)
-                          : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.fitness_center,
-                  color: _currentIndex == 2 ? Colors.white : Colors.grey,
-                ),
-              ),
-              label: 'Workout',
-            ),
-            BottomNavigationBarItem(
-              icon: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color:
-                      _currentIndex == 3
-                          ? Color(0xFF6366F1)
-                          : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.calendar_today,
-                  color: _currentIndex == 3 ? Colors.white : Colors.grey,
-                ),
-              ),
-              label: 'Schedule',
-            ),
-          ],
+            );
+          }),
         ),
       ),
     );
