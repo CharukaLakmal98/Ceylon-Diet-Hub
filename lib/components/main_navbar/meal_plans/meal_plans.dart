@@ -1,45 +1,36 @@
 import 'package:flutter/material.dart';
+import 'breakfirst.dart';
+import 'lunch.dart';
+import 'dinner.dart';
 
 class MealPlansPage extends StatefulWidget {
+  const MealPlansPage({Key? key}) : super(key: key);
+
   @override
   _MealPlansPageState createState() => _MealPlansPageState();
 }
 
 class _MealPlansPageState extends State<MealPlansPage> {
-  int? selectedMealIndex;
-
   final List<Map<String, dynamic>> mealTypes = [
-    {
-      'name': 'Breakfast',
-      'image': 'assets/images/breakfast.jpg', // Replace with your image path
-      'icon': Icons.breakfast_dining,
-    },
-    {
-      'name': 'Lunch',
-      'image': 'assets/images/lunch.jpg', // Replace with your image path
-      'icon': Icons.lunch_dining,
-    },
-    {
-      'name': 'Dinner',
-      'image': 'assets/images/dinner.jpg', // Replace with your image path
-      'icon': Icons.dinner_dining,
-    },
+    {'name': 'Breakfast', 'image': 'assets/images/lunch.jpg'},
+    {'name': 'Lunch', 'image': 'assets/images/breakfast.jpg'},
+    {'name': 'Dinner', 'image': 'assets/images/dinner.jpg'},
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // BMI Card
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
@@ -48,14 +39,14 @@ class _MealPlansPageState extends State<MealPlansPage> {
                       color: Colors.grey.withOpacity(0.1),
                       spreadRadius: 1,
                       blurRadius: 10,
-                      offset: Offset(0, 2),
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -68,7 +59,7 @@ class _MealPlansPageState extends State<MealPlansPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -76,7 +67,7 @@ class _MealPlansPageState extends State<MealPlansPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Health Status',
                               style: TextStyle(
                                 fontSize: 16,
@@ -84,9 +75,9 @@ class _MealPlansPageState extends State<MealPlansPage> {
                                 color: Colors.black87,
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Row(
-                              children: [
+                              children: const [
                                 Text(
                                   'Normal weight',
                                   style: TextStyle(
@@ -107,7 +98,7 @@ class _MealPlansPageState extends State<MealPlansPage> {
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
+                          children: const [
                             Text(
                               'Your BMI',
                               style: TextStyle(
@@ -133,10 +124,9 @@ class _MealPlansPageState extends State<MealPlansPage> {
                 ),
               ),
 
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
 
-              // Meal Selection Title
-              Text(
+              const Text(
                 'Please select one of them',
                 style: TextStyle(
                   fontSize: 20,
@@ -145,50 +135,52 @@ class _MealPlansPageState extends State<MealPlansPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-              // Meal Options
               ...mealTypes.asMap().entries.map((entry) {
                 int index = entry.key;
                 Map<String, dynamic> meal = entry.value;
 
                 return Container(
-                  margin: EdgeInsets.only(bottom: 20),
+                  margin: const EdgeInsets.only(bottom: 20),
                   child: GestureDetector(
                     onTap: () {
-                      setState(() {
-                        selectedMealIndex = index;
-                      });
-                      // Add your navigation logic here
-                      print('Selected: ${meal['name']}');
+                      Widget targetPage;
+                      switch (meal['name']) {
+                        case 'Breakfast':
+                          targetPage = const BreakfirstPage();
+                          break;
+                        case 'Lunch':
+                          targetPage = const LunchPage();
+                          break;
+                        case 'Dinner':
+                          targetPage = const DinnerPage();
+                          break;
+                        default:
+                          return;
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => targetPage),
+                      );
                     },
                     child: Container(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color:
-                            selectedMealIndex == index
-                                ? Color(0xFF6366F1).withOpacity(0.1)
-                                : Colors.white,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color:
-                              selectedMealIndex == index
-                                  ? Color(0xFF6366F1)
-                                  : Colors.transparent,
-                          width: 2,
-                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.grey.withOpacity(0.1),
                             spreadRadius: 1,
                             blurRadius: 10,
-                            offset: Offset(0, 2),
+                            offset: const Offset(0, 2),
                           ),
                         ],
                       ),
                       child: Row(
                         children: [
-                          // Meal Image/Icon
                           Container(
                             width: 70,
                             height: 70,
@@ -197,77 +189,34 @@ class _MealPlansPageState extends State<MealPlansPage> {
                               color: _getMealColor(index),
                             ),
                             child: ClipOval(
-                              child: Icon(
-                                meal['icon'],
-                                size: 35,
-                                color: Colors.white,
+                              child: Image.asset(
+                                meal['image'], // Fixed: Using the correct image key
+                                fit: BoxFit.cover,
                               ),
-                              // If you have actual images, replace the Icon with:
-                              // Image.asset(
-                              //   meal['image'],
-                              //   fit: BoxFit.cover,
-                              // ),
                             ),
                           ),
-
-                          SizedBox(width: 20),
-
-                          // Meal Name
+                          const SizedBox(width: 20),
                           Expanded(
                             child: Text(
                               meal['name'],
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black87,
                               ),
                             ),
                           ),
-
-                          // Selection Indicator
-                          if (selectedMealIndex == index)
-                            Icon(
-                              Icons.check_circle,
-                              color: Color(0xFF6366F1),
-                              size: 24,
-                            ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
                         ],
                       ),
                     ),
                   ),
                 );
               }).toList(),
-
-              SizedBox(height: 30),
-
-              // Continue Button (if meal is selected)
-              if (selectedMealIndex != null)
-                Container(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Add your continue logic here
-                      print(
-                        'Continue with: ${mealTypes[selectedMealIndex!]['name']}',
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF6366F1),
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      'Continue',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
@@ -277,14 +226,14 @@ class _MealPlansPageState extends State<MealPlansPage> {
 
   Color _getMealColor(int index) {
     switch (index) {
-      case 0: // Breakfast
-        return Color(0xFFFF9800);
-      case 1: // Lunch
-        return Color(0xFF4CAF50);
-      case 2: // Dinner
-        return Color(0xFF9C27B0);
+      case 0:
+        return const Color(0xFFFF9800); // Breakfast
+      case 1:
+        return const Color(0xFF4CAF50); // Lunch
+      case 2:
+        return const Color(0xFF9C27B0); // Dinner
       default:
-        return Color(0xFF6366F1);
+        return const Color(0xFF6366F1);
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:diet_hub/components/main_navbar/meal_plans/meal_plans.dart';
-import 'package:diet_hub/components/main_navbar/profile_page.dart';
-import 'package:diet_hub/components/main_navbar/workout_page.dart';
+import 'package:diet_hub/components/main_navbar/profile/profile_page.dart';
+import 'package:diet_hub/components/main_navbar/workout/workout_page.dart';
 import 'package:flutter/material.dart';
 
 class MainNavbar extends StatefulWidget {
